@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="vm"
+            type="com.example.musinsasampleapp.vm.GithubSearchViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/et_search"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:ems="10"
+            android:imeOptions="actionSearch"
+            android:importantForAutofill="no"
+            android:inputType="textPersonName"
+            android:text="@={vm.query}"
+            app:layout_constraintEnd_toStartOf="@+id/iv_cancel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/iv_cancel"
+            android:layout_width="@dimen/ic_image_size_cancel"
+            android:layout_height="@dimen/ic_image_size_cancel"
+            android:layout_marginEnd="16dp"
+            android:onClick="@{()-> vm.clearQuery()}"
+            app:layout_constraintBottom_toBottomOf="@+id/et_search"
+            app:layout_constraintEnd_toStartOf="@+id/iv_search"
+            app:layout_constraintTop_toTopOf="@+id/et_search"
+            app:srcCompat="@drawable/ic_cancel" />
+
+        <ImageView
+            android:id="@+id/iv_search"
+            android:layout_width="@dimen/ic_image_size_search"
+            android:layout_height="@dimen/ic_image_size_search"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/et_search"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/et_search"
+            app:srcCompat="@drawable/ic_search" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_users"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/et_search" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">MusinsaSampleApp</string>
+
+    <!--MainActivity-->
+    <string name="bt_github">깃허브 과제</string>
+    <string name="bt_ui">UI 과제</string>
+
+    <!--GithubSearchFragment-->
+    <string name="tv_score">score :</string>
 </resources>
