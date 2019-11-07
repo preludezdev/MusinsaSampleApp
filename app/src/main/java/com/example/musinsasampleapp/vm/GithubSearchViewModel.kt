@@ -12,13 +12,16 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
     private val _userList = MutableLiveData<List<User>>()
     val userList: LiveData<List<User>> get() = _userList
 
-    private val _myUserList = MutableLiveData<List<User>>()
-    val myUserList: LiveData<List<User>> get() = _myUserList
-
     private val _notificationMsg = MutableLiveData<String>()
     val notificationMsg: LiveData<String> get() = _notificationMsg
 
-    private val localMyUserList = HashMap<Int, User>()
+    lateinit var myUserList: LiveData<List<User>>
+
+    init {
+        Thread(Runnable {
+            myUserList = repository.loadMyUserList()
+        }).start()
+    }
 
     fun searchUsersByQuery() {
         val currQuery = query.value
@@ -35,7 +38,11 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
                     showToastNotificationMsg("검색 결과가 없습니다.")
                 } else {
                     _userList.value =
-                        response.items.map { item -> item.convertItemIntoUser(isUserChecked(item.id)) }
+                        response.items.map { item ->
+                            val user = item.convertItemIntoUser(false)
+                            setUserChecked(user)
+                            user
+                        }
                 }
             }, {
                 showToastNotificationMsg(it)
@@ -47,15 +54,19 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
     }
 
     fun changeMyUserList(user: User) {
-        when (user.checked) {
-            true -> localMyUserList[user.id] = user
-            false -> localMyUserList.remove(user.id)
-        }
-
-        _myUserList.value = ArrayList(localMyUserList.values)
+        Thread(Runnable {
+            when (user.checked) {
+                true -> repository.insertUser(user)
+                false -> repository.deleteUserById(user.id)
+            }
+        }).start()
     }
 
-    private fun isUserChecked(UserId: Int): Boolean = localMyUserList.containsKey(UserId)
+    private fun setUserChecked(user: User) {
+        Thread(Runnable {
+            user.checked = repository.findUserById(user.id) != null
+        }).start()
+    }
 
     private fun showToastNotificationMsg(msg: String) {
         _notificationMsg.value = msg

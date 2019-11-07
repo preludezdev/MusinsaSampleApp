@@ -12,17 +12,17 @@ data class GithubUsersResponse(
     val items: List<Item>
 ) {
     data class Item(
-        @SerializedName("login")
-        val login: String,
         @SerializedName("id")
         val id: Int,
+        @SerializedName("login")
+        val login: String,
         @SerializedName("avatar_url")
         val avatarUrl: String,
         @SerializedName("score")
         val score: Double
     ) {
         fun convertItemIntoUser(checked: Boolean): User =
-            User(login, id, avatarUrl, score, checked)
+            User(id, login, avatarUrl, score, checked)
     }
 
 }
