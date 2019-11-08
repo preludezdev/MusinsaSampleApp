@@ -7,10 +7,13 @@ import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.example.musinsasampleapp.R
 import com.example.musinsasampleapp.base.BaseFragment
 import com.example.musinsasampleapp.data.vo.User
 import com.example.musinsasampleapp.databinding.FragmentGithubSearchBinding
+import com.example.musinsasampleapp.ui.main.githubtest.GithubRvAdapter
 import com.example.musinsasampleapp.vm.GithubSearchViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -19,11 +22,8 @@ class GithubSearchFragment :
 
     private val viewModel by sharedViewModel<GithubSearchViewModel>()
     private val rvAdapter by lazy {
-        GithubSearchAdapter(diffUtilCallback) { position, action ->
-            clickEventCallback(
-                position,
-                action
-            )
+        GithubRvAdapter(true, diffUtilCallback) { position, action ->
+            clickEventCallback(position, action)
         }
     }
 
@@ -64,14 +64,30 @@ class GithubSearchFragment :
             hideKeyBoard()
             viewModel.searchUsersByQuery()
         }
+
+        binding.rvUsers.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+
+                val lastVisibleItemPosition =
+                    (binding.rvUsers.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
+                val itemTotalCount = binding.rvUsers.adapter!!.itemCount
+
+                if (itemTotalCount >= GithubSearchViewModel.PER_PAGE) {
+                    if (lastVisibleItemPosition == itemTotalCount.minus(1)) {
+                        viewModel.loadMoreData()
+                    }
+                }
+            }
+        })
     }
 
     private fun initCallback() {
-        viewModel.notificationMsg.observe(this, Observer {
+        viewModel.notificationMsg.observe(viewLifecycleOwner, Observer {
             showToastMessage(it)
         })
 
-        viewModel.query.observe(this, Observer {
+        viewModel.query.observe(viewLifecycleOwner, Observer {
             if (it.isEmpty()) {
                 binding.ivCancel.visibility = View.INVISIBLE
             } else {
@@ -79,8 +95,8 @@ class GithubSearchFragment :
             }
         })
 
-        viewModel.userList.observe(this, Observer {
-            rvAdapter.submitList(it)
+        viewModel.userList.observe(viewLifecycleOwner, Observer {
+            rvAdapter.submitList(it.toMutableList())
         })
     }
 
@@ -92,23 +108,16 @@ class GithubSearchFragment :
     companion object {
         val diffUtilCallback =
             object : DiffUtil.ItemCallback<User>() {
-                override fun areItemsTheSame(
-                    oldItem: User,
-                    newItem: User
-                ): Boolean {
+                override fun areItemsTheSame(oldItem: User, newItem: User): Boolean {
                     return oldItem.id == newItem.id
                 }
 
-                override fun areContentsTheSame(
-                    oldItem: User,
-                    newItem: User
-                ): Boolean {
+                override fun areContentsTheSame(oldItem: User, newItem: User): Boolean {
                     return oldItem.login == newItem.login
                 }
             }
 
-        fun newInstance() =
-            GithubSearchFragment()
+        fun newInstance() = GithubSearchFragment()
     }
 
 }

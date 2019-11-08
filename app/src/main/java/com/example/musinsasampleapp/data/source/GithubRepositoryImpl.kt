@@ -14,10 +14,12 @@ class GithubRepositoryImpl(
     //remote
     override fun getUsersByQuery(
         query: String?,
+        page: Int,
+        per_page: Int,
         onSuccess: (data: GithubUsersResponse) -> Unit,
         onFail: (errorMsg: String) -> Unit
     ) {
-        remoteDataSource.getUsersByQuery(query, onSuccess, onFail)
+        remoteDataSource.getUsersByQuery(query, page, per_page, onSuccess, onFail)
     }
 
     //local

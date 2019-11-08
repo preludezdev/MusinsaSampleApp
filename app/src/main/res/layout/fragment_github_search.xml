@@ -27,6 +27,7 @@
             android:importantForAutofill="no"
             android:inputType="textPersonName"
             android:text="@={vm.query}"
+            android:hint="@string/et_search_hint"
             app:layout_constraintEnd_toStartOf="@+id/iv_cancel"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -40,6 +41,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/et_search"
             app:layout_constraintEnd_toStartOf="@+id/iv_search"
             app:layout_constraintTop_toTopOf="@+id/et_search"
+            android:contentDescription="@null"
             app:srcCompat="@drawable/ic_cancel" />
 
         <ImageView
@@ -50,6 +52,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/et_search"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/et_search"
+            android:contentDescription="@null"
             app:srcCompat="@drawable/ic_search" />
 
         <androidx.recyclerview.widget.RecyclerView
@@ -57,11 +60,22 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
-
+            android:visibility="@{vm.isProgress ? View.INVISIBLE : View.VISIBLE}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/et_search" />
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{vm.isProgress ? View.VISIBLE : View.INVISIBLE}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/rv_users" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

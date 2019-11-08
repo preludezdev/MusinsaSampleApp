@@ -8,6 +8,8 @@ interface GithubRepository {
     //remote
     fun getUsersByQuery(
         query: String?,
+        page: Int,
+        per_page: Int,
         onSuccess: (data: GithubUsersResponse) -> Unit,
         onFail: (errorMsg: String) -> Unit
     )

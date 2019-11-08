@@ -9,6 +9,8 @@ import retrofit2.Response
 class GithubRemoteDataSourceImpl(private val api: GithubApiService) : GithubRemoteDataSource {
     override fun getUsersByQuery(
         query: String?,
+        page: Int,
+        per_page: Int,
         onSuccess: (data: GithubUsersResponse) -> Unit,
         onFail: (errorMsg: String) -> Unit
     ) {
@@ -17,7 +19,7 @@ class GithubRemoteDataSourceImpl(private val api: GithubApiService) : GithubRemo
             return
         }
 
-        api.searchUserByQuery(query)
+        api.searchUserByQuery(query, page, per_page)
             .enqueue(object : Callback<GithubUsersResponse> {
                 override fun onFailure(call: Call<GithubUsersResponse>, t: Throwable) {
                     onFail("네트워크 통신에 실패했습니다.")
