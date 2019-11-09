@@ -9,7 +9,7 @@ object DiffCallback : DiffUtil.ItemCallback<User>() {
     }
 
     override fun areContentsTheSame(oldItem: User, newItem: User): Boolean {
-        return oldItem.login == newItem.login
+        return oldItem.login == newItem.login && oldItem.score == newItem.score
     }
 
 }

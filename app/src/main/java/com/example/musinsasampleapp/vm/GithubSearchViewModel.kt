@@ -21,7 +21,7 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
     private val _isProgress = MutableLiveData<Boolean>()
     val isProgress: LiveData<Boolean> get() = _isProgress
 
-    private var pageNumber = 0
+    private var pageNumber = FIRST_PAGE
     private val localUserList = mutableListOf<User>()
 
     var myUserList = repository.loadMyUserList()
@@ -34,7 +34,7 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
             return
         }
 
-        pageNumber = 0
+        pageNumber = FIRST_PAGE
 
         repository
             .getUsersByQuery(currQuery!!, pageNumber, PER_PAGE)
@@ -73,7 +73,7 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
                     showToastNotificationMsg("검색 결과가 더 없습니다.")
                 } else {
                     localUserList.addAll(
-                        response.items.map { item ->
+                        newUserList.map { item ->
                             val user = item.convertItemIntoUser(false)
                             setUserChecked(user)
                             user
@@ -132,7 +132,8 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
     }
 
     companion object {
-        const val PER_PAGE = 30
+        const val FIRST_PAGE = 1
+        const val PER_PAGE = 20
     }
 
 }
