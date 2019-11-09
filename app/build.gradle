@@ -40,26 +40,32 @@ dependencies {
     def material_version = "1.0.0"
     implementation "com.google.android.material:material:$material_version"
 
+    // Room
+    def room_version = "2.2.1"
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"  // necessary for use kotlin
+
     // ViewModel and LiveData
     def aac_view_model_version = "2.2.0-rc01"
     implementation "androidx.lifecycle:lifecycle-extensions:$aac_view_model_version"
 
     // Retrofit
-    def retrofit_version = "2.4.0"
+    def retrofit_version = "2.6.0"
     implementation "com.squareup.retrofit2:retrofit:$retrofit_version"
     implementation "com.squareup.retrofit2:converter-gson:$retrofit_version"
     implementation "com.google.code.gson:gson:$retrofit_version"
+    implementation "com.squareup.retrofit2:adapter-rxjava2:$retrofit_version"
 
     // Glide
     def glide_version = "4.10.0"
     implementation "com.github.bumptech.glide:glide:$glide_version"
 
+    // RxJava
+    implementation 'io.reactivex.rxjava2:rxjava:2.2.10'
+    implementation 'io.reactivex.rxjava2:rxandroid:2.1.1'
+
     // Koin for Kotlin
     def koin_version = "2.0.1"
     implementation "org.koin:koin-androidx-viewmodel:$koin_version"
 
-    // Room
-    def room_version = "2.2.1"
-    implementation "androidx.room:room-runtime:$room_version"
-    kapt "androidx.room:room-compiler:$room_version"  // necessary for use kotlin
 }

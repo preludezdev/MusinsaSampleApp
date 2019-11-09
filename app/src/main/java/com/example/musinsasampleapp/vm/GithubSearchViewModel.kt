@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.musinsasampleapp.data.source.GithubRepository
 import com.example.musinsasampleapp.data.vo.User
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 
 class GithubSearchViewModel(private val repository: GithubRepository) : ViewModel() {
     val query = MutableLiveData<String>("")
@@ -13,8 +15,8 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
     private val _userList = MutableLiveData<List<User>>()
     val userList: LiveData<List<User>> get() = _userList
 
-    private val _notificationMsg = MutableLiveData<String>()
-    val notificationMsg: LiveData<String> get() = _notificationMsg
+    private val _notificationMsg = MutableLiveData<Event<String>>()
+    val notificationMsg: LiveData<Event<String>> get() = _notificationMsg
 
     private val _isProgress = MutableLiveData<Boolean>()
     val isProgress: LiveData<Boolean> get() = _isProgress
@@ -41,7 +43,10 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
         pageNumber = 0
 
         repository
-            .getUsersByQuery(currQuery, pageNumber, PER_PAGE, { response ->
+            .getUsersByQuery(currQuery!!, pageNumber, PER_PAGE)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ response ->
                 val newUserList = response.items
                 if (newUserList.isEmpty()) {
                     showToastNotificationMsg("검색 결과가 없습니다.")
@@ -56,7 +61,7 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
                     _userList.value = localUserList
                 }
             }, {
-                showToastNotificationMsg(it)
+                showToastNotificationMsg("네트워크 통신에 실패했습니다. ${it.message}")
             })
     }
 
@@ -65,7 +70,10 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
         pageNumber++
 
         repository
-            .getUsersByQuery(currQuery, pageNumber, PER_PAGE, { response ->
+            .getUsersByQuery(currQuery!!, pageNumber, PER_PAGE)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ response ->
                 val newUserList = response.items
                 if (newUserList.isEmpty()) {
                     showToastNotificationMsg("검색 결과가 더 없습니다.")
@@ -80,7 +88,7 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
                 }
                 hideProgressBar()
             }, {
-                showToastNotificationMsg(it)
+                showToastNotificationMsg("네트워크 통신에 실패했습니다.")
                 hideProgressBar()
             })
     }
@@ -105,7 +113,7 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
     }
 
     private fun showToastNotificationMsg(msg: String) {
-        _notificationMsg.value = msg
+        _notificationMsg.value = Event(msg)
     }
 
     private fun showProgressBar() {

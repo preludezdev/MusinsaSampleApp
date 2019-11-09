@@ -3,7 +3,6 @@ package com.example.musinsasampleapp.data.source
 import androidx.lifecycle.LiveData
 import com.example.musinsasampleapp.data.source.local.GithubLocalDataSource
 import com.example.musinsasampleapp.data.source.remote.GithubRemoteDataSource
-import com.example.musinsasampleapp.data.vo.GithubUsersResponse
 import com.example.musinsasampleapp.data.vo.User
 
 class GithubRepositoryImpl(
@@ -12,15 +11,8 @@ class GithubRepositoryImpl(
 ) : GithubRepository {
 
     //remote
-    override fun getUsersByQuery(
-        query: String?,
-        page: Int,
-        per_page: Int,
-        onSuccess: (data: GithubUsersResponse) -> Unit,
-        onFail: (errorMsg: String) -> Unit
-    ) {
-        remoteDataSource.getUsersByQuery(query, page, per_page, onSuccess, onFail)
-    }
+    override fun getUsersByQuery(query: String, page: Int, per_page: Int) =
+        remoteDataSource.getUsersByQuery(query, page, per_page)
 
     //local
     override fun loadMyUserList(): LiveData<List<User>> = localDataSource.loadMyUserList()

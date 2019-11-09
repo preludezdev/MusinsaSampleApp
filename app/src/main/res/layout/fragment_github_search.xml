@@ -38,6 +38,7 @@
             android:layout_height="@dimen/ic_image_size_cancel"
             android:layout_marginEnd="16dp"
             android:onClick="@{()-> vm.clearQuery()}"
+            android:visibility="@{vm.query.length() == 0 ? View.INVISIBLE : View.VISIBLE}"
             app:layout_constraintBottom_toBottomOf="@+id/et_search"
             app:layout_constraintEnd_toStartOf="@+id/iv_search"
             app:layout_constraintTop_toTopOf="@+id/et_search"
@@ -60,11 +61,11 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
-            android:visibility="@{vm.isProgress ? View.INVISIBLE : View.VISIBLE}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/et_search" />
+            app:layout_constraintTop_toBottomOf="@+id/et_search"
+            app:submitList="@{vm.userList}" />
 
         <ProgressBar
             android:id="@+id/progressBar"

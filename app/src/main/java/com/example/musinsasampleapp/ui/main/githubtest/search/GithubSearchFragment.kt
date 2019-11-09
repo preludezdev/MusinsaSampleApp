@@ -3,16 +3,14 @@ package com.example.musinsasampleapp.ui.main.githubtest.search
 import android.app.Activity
 import android.os.Bundle
 import android.view.KeyEvent
-import android.view.View
 import android.view.inputmethod.InputMethodManager
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.musinsasampleapp.R
 import com.example.musinsasampleapp.base.BaseFragment
-import com.example.musinsasampleapp.data.vo.User
 import com.example.musinsasampleapp.databinding.FragmentGithubSearchBinding
+import com.example.musinsasampleapp.ui.main.githubtest.DiffCallback
 import com.example.musinsasampleapp.ui.main.githubtest.GithubRvAdapter
 import com.example.musinsasampleapp.vm.GithubSearchViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
@@ -22,7 +20,7 @@ class GithubSearchFragment :
 
     private val viewModel by sharedViewModel<GithubSearchViewModel>()
     private val rvAdapter by lazy {
-        GithubRvAdapter(true, diffUtilCallback) { position, action ->
+        GithubRvAdapter(true, DiffCallback) { position, action ->
             clickEventCallback(position, action)
         }
     }
@@ -84,19 +82,7 @@ class GithubSearchFragment :
 
     private fun initCallback() {
         viewModel.notificationMsg.observe(viewLifecycleOwner, Observer {
-            showToastMessage(it)
-        })
-
-        viewModel.query.observe(viewLifecycleOwner, Observer {
-            if (it.isEmpty()) {
-                binding.ivCancel.visibility = View.INVISIBLE
-            } else {
-                binding.ivCancel.visibility = View.VISIBLE
-            }
-        })
-
-        viewModel.userList.observe(viewLifecycleOwner, Observer {
-            rvAdapter.submitList(it.toMutableList())
+            it.getContentIfNotHandled()?.let { msg -> showToastMessage(msg) }
         })
     }
 
@@ -106,17 +92,6 @@ class GithubSearchFragment :
     }
 
     companion object {
-        val diffUtilCallback =
-            object : DiffUtil.ItemCallback<User>() {
-                override fun areItemsTheSame(oldItem: User, newItem: User): Boolean {
-                    return oldItem.id == newItem.id
-                }
-
-                override fun areContentsTheSame(oldItem: User, newItem: User): Boolean {
-                    return oldItem.login == newItem.login
-                }
-            }
-
         fun newInstance() = GithubSearchFragment()
     }
 
