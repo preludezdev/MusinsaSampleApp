@@ -24,13 +24,7 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
     private var pageNumber = 0
     private val localUserList = mutableListOf<User>()
 
-    lateinit var myUserList: LiveData<List<User>>
-
-    init {
-        Thread(Runnable {
-            myUserList = repository.loadMyUserList()
-        }).start()
-    }
+    var myUserList = repository.loadMyUserList()
 
     fun searchUsersByQuery() {
         currQuery = query.value
@@ -98,18 +92,31 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
     }
 
     fun changeMyUserList(user: User) {
-        Thread(Runnable {
-            when (user.checked) {
-                true -> repository.insertUser(user)
-                false -> repository.deleteUserById(user.id)
-            }
-        }).start()
+        when (user.checked) {
+            true -> repository
+                .insertUser(user)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({}, { showToastNotificationMsg("데이터 삽입을 실패했습니다.") })
+
+            false -> repository
+                .deleteUserById(user.id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({}, { showToastNotificationMsg("데이터 삭제를 실패했습니다.") })
+        }
     }
 
     private fun setUserChecked(user: User) {
-        Thread(Runnable {
-            user.checked = repository.findUserById(user.id) != null
-        }).start()
+        repository
+            .findUserById(user.id)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe({ userId ->
+                user.checked = userId != null
+            }, {
+                showToastNotificationMsg("로컬 데이터를 가져오는데 실패했습니다.")
+            })
     }
 
     private fun showToastNotificationMsg(msg: String) {

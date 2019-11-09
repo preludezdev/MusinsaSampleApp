@@ -3,6 +3,7 @@ package com.example.musinsasampleapp.data.source.local
 import androidx.lifecycle.LiveData
 import com.example.musinsasampleapp.data.source.local.dao.GithubUsersDao
 import com.example.musinsasampleapp.data.vo.User
+import io.reactivex.Maybe
 
 class GithubLocalDataSourceImpl(private val dao: GithubUsersDao) : GithubLocalDataSource {
 
@@ -12,6 +13,6 @@ class GithubLocalDataSourceImpl(private val dao: GithubUsersDao) : GithubLocalDa
 
     override fun deleteUserById(userId: Int) = dao.deleteUserById(userId)
 
-    override fun findUserById(userId: Int): User = dao.findUserById(userId)
+    override fun findUserById(userId: Int): Maybe<User> = dao.findUserById(userId)
 
 }
