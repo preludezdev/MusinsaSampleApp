@@ -3,7 +3,7 @@ package com.example.musinsasampleapp.ui.main.githubtest
 import androidx.recyclerview.widget.DiffUtil
 import com.example.musinsasampleapp.data.vo.User
 
-object DiffCallback : DiffUtil.ItemCallback<User>() {
+object UserDiffCallback : DiffUtil.ItemCallback<User>() {
     override fun areItemsTheSame(oldItem: User, newItem: User): Boolean {
         return oldItem.id == newItem.id
     }

@@ -17,10 +17,4 @@ data class User(
     @SerializedName("score")
     @ColumnInfo(name = "score") val score: Double,
     @ColumnInfo(name = "checked") var checked: Boolean = false
-) {
-    override fun equals(other: Any?): Boolean {
-        return this.id == (other as User).id
-    }
-
-    override fun hashCode(): Int = this.id
-}
+)

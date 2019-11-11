@@ -6,9 +6,12 @@ import androidx.lifecycle.ViewModel
 import com.example.musinsasampleapp.data.source.GithubRepository
 import com.example.musinsasampleapp.data.vo.User
 import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
 
 class GithubSearchViewModel(private val repository: GithubRepository) : ViewModel() {
+    private val compositeDisposable = CompositeDisposable()
+
     val query = MutableLiveData<String>("")
     private var currQuery: String? = null
 
@@ -34,57 +37,52 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
             return
         }
 
+        showProgressBar()
         pageNumber = FIRST_PAGE
 
-        repository
-            .getUsersByQuery(currQuery!!, pageNumber, PER_PAGE)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ response ->
-                val newUserList = response.items
-                if (newUserList.isEmpty()) {
-                    showToastNotificationMsg("검색 결과가 없습니다.")
-                } else {
-                    localUserList.clear()
-                    localUserList.addAll(
-                        response.items.map { item ->
-                            val user = item.convertItemIntoUser(false)
-                            setUserChecked(user)
-                            user
-                        })
-                    _userList.value = localUserList
-                }
-            }, {
-                showToastNotificationMsg("네트워크 통신에 실패했습니다. ${it.message}")
-            })
+        compositeDisposable.add(
+            repository
+                .getUsersByQuery(currQuery!!, pageNumber, PER_PAGE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ response ->
+                    if (response.isEmpty()) {
+                        showToastNotificationMsg("검색 결과가 없습니다.")
+                    } else {
+                        localUserList.clear()
+                        localUserList.addAll(response)
+                        _userList.value = localUserList
+                    }
+                    hideProgressBar()
+                }, {
+                    showToastNotificationMsg("네트워크 통신에 실패했습니다. ${it.message}")
+                    hideProgressBar()
+                })
+        )
     }
 
     fun loadMoreData() {
         showProgressBar()
         pageNumber++
 
-        repository
-            .getUsersByQuery(currQuery!!, pageNumber, PER_PAGE)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ response ->
-                val newUserList = response.items
-                if (newUserList.isEmpty()) {
-                    showToastNotificationMsg("검색 결과가 더 없습니다.")
-                } else {
-                    localUserList.addAll(
-                        newUserList.map { item ->
-                            val user = item.convertItemIntoUser(false)
-                            setUserChecked(user)
-                            user
-                        })
-                    _userList.value = localUserList
-                }
-                hideProgressBar()
-            }, {
-                showToastNotificationMsg("네트워크 통신에 실패했습니다.")
-                hideProgressBar()
-            })
+        compositeDisposable.add(
+            repository
+                .getUsersByQuery(currQuery!!, pageNumber, PER_PAGE)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({ response ->
+                    if (response.isEmpty()) {
+                        showToastNotificationMsg("검색 결과가 더 없습니다.")
+                    } else {
+                        localUserList.addAll(response)
+                        _userList.value = localUserList
+                    }
+                    hideProgressBar()
+                }, {
+                    showToastNotificationMsg("네트워크 통신에 실패했습니다.")
+                    hideProgressBar()
+                })
+        )
     }
 
     fun clearQuery() {
@@ -107,18 +105,6 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
         }
     }
 
-    private fun setUserChecked(user: User) {
-        repository
-            .findUserById(user.id)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ userId ->
-                user.checked = userId != null
-            }, {
-                showToastNotificationMsg("로컬 데이터를 가져오는데 실패했습니다.")
-            })
-    }
-
     private fun showToastNotificationMsg(msg: String) {
         _notificationMsg.value = Event(msg)
     }
@@ -129,6 +115,12 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
 
     private fun hideProgressBar() {
         _isProgress.value = false
+    }
+
+    override fun onCleared() {
+        super.onCleared()
+
+        compositeDisposable.dispose()
     }
 
     companion object {

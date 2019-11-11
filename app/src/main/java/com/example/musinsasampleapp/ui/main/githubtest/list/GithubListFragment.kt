@@ -4,8 +4,8 @@ import android.os.Bundle
 import com.example.musinsasampleapp.R
 import com.example.musinsasampleapp.base.BaseFragment
 import com.example.musinsasampleapp.databinding.FragmentGithubListBinding
-import com.example.musinsasampleapp.ui.main.githubtest.DiffCallback
 import com.example.musinsasampleapp.ui.main.githubtest.GithubRvAdapter
+import com.example.musinsasampleapp.ui.main.githubtest.UserDiffCallback
 import com.example.musinsasampleapp.vm.GithubSearchViewModel
 import org.koin.androidx.viewmodel.ext.android.sharedViewModel
 
@@ -13,7 +13,7 @@ class GithubListFragment : BaseFragment<FragmentGithubListBinding>(R.layout.frag
 
     private val viewModel by sharedViewModel<GithubSearchViewModel>()
     private val rvAdapter by lazy {
-        GithubRvAdapter(false, DiffCallback) { position, action ->
+        GithubRvAdapter(false, UserDiffCallback) { position, action ->
             clickEventCallback(position, action)
         }
     }
