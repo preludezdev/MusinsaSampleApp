@@ -1,6 +1,8 @@
 package com.example.musinsasampleapp.base
 
+import android.content.pm.ActivityInfo
 import android.os.Bundle
+import android.widget.Toast
 import androidx.annotation.LayoutRes
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
@@ -16,5 +18,17 @@ abstract class BaseActivity<B : ViewDataBinding>(@LayoutRes private val layoutId
 
         binding = DataBindingUtil.setContentView(this, layoutId)
         binding.lifecycleOwner = this
+
+        setOrientationToPortrait()
+    }
+
+    protected fun showToastMessage(msg: String?) {
+        if (!msg.isNullOrEmpty()) {
+            Toast.makeText(this, msg, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun setOrientationToPortrait() {
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 }

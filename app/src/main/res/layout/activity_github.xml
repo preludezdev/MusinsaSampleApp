@@ -22,7 +22,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:tabIndicatorColor="@color/colorPrimaryDark"
             app:tabIndicatorHeight="4dp"
-            app:tabSelectedTextColor="@color/colorAccent"
+            app:tabSelectedTextColor="@color/colorPrimaryDark"
             app:tabTextAppearance="@style/tab_text" />
 
         <androidx.viewpager.widget.ViewPager

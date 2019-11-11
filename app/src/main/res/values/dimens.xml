@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Margin-->
+    <dimen name="margin_start">15dp</dimen>
+    <dimen name="margin_end">15dp</dimen>
+
     <!--GithubSearchActivty-->
     <dimen name="category_text_size">16dp</dimen>
     <dimen name="ic_image_size_cancel">16dp</dimen>
@@ -9,4 +13,11 @@
     <dimen name="ic_image_size">60dp</dimen>
     <dimen name="tv_username">20dp</dimen>
     <dimen name="tv_score">12dp</dimen>
+
+    <!--custom_meeting_room_layout-->
+    <dimen name="tv_room_location_text_size">12sp</dimen>
+    <dimen name="tv_curr_time_text_size">11sp</dimen>
+    <dimen name="tv_small_text_size">12sp</dimen>
+    <dimen name="tv_num_space_size">20dp</dimen>
+
 </resources>

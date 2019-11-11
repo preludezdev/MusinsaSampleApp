@@ -8,4 +8,32 @@
     <!--GithubSearchFragment-->
     <string name="tv_score">score :</string>
     <string name="et_search_hint">검색어를 입력해 주세요&#8230;</string>
+
+    <!--UiActivity-->
+    <string name="tv_curr_possible_room">현재 사용 가능 회의실</string>
+    <string name="tv_reservation_possible">예약가능</string>
+    <string name="tv_out_meeting">외부미팅</string>
+    <string name="tv_my_reservation">내 예약</string>
+    <string name="tv_meeting_room_name_example">대회의실1</string>
+
+    <!--UiActivityMenu-->
+    <string name="menu_title">02월 12일(수)</string>
+    <string name="menu_expand">expand</string>
+    <string name="menu_question">question</string>
+
+    <!--custom_meeting_room_layout-->
+    <string name="tv_room_name">회의실 명</string>
+    <string name="tv_room_location">MUSINSA 1 / B1</string>
+    <string name="tv_curr_time">현재시간</string>
+    <string name="tv_9">9</string>
+    <string name="tv_10">10</string>
+    <string name="tv_11">11</string>
+    <string name="tv_12">12</string>
+    <string name="tv_13">13</string>
+    <string name="tv_14">14</string>
+    <string name="tv_15">15</string>
+    <string name="tv_16">16</string>
+    <string name="tv_17">17</string>
+    <string name="tv_18">18</string>
+
 </resources>

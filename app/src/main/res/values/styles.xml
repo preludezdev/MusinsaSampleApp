@@ -11,7 +11,29 @@
     <style name="tab_text" parent="@android:style/TextAppearance.Widget.TabWidget">
         <item name="android:textSize">@dimen/category_text_size</item>
         <item name="android:textStyle">bold</item>
-        <item name="android:textColor">@color/colorPrimary</item>
+        <item name="android:textColor">@color/very_light_pink_two</item>
+    </style>
+
+    <style name="BigBoldText">
+        <item name="android:textSize">18sp</item>
+        <item name="android:lineSpacingExtra">9sp</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+    <style name="BigBoldTextWithSkyColor">
+        <item name="android:textSize">18sp</item>
+        <item name="android:lineSpacingExtra">9sp</item>
+        <item name="android:textColor">@color/deep_blue_sky</item>
+    </style>
+
+    <style name="SmallTextWithBrownishGrey">
+        <item name="android:textSize">@dimen/tv_small_text_size</item>
+        <item name="android:textColor">@color/brownish_grey</item>
+    </style>
+
+    <style name="SmallTextWithBlack">
+        <item name="android:textSize">@dimen/tv_small_text_size</item>
+        <item name="android:textColor">@color/black</item>
     </style>
 
 </resources>
