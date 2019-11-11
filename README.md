@@ -8,7 +8,7 @@
 - 의존성 주입(Koin)
 - 데이터 비동기 처리 (RxJava, LiveData)
 - MVVM 설계 구축 (ViewModel, DataBinding, LiveData)
-- 데이터 소스 및 관리 (Retrofit2, Room)
+- 데이터 소스 관리 (Retrofit2, Room)
 - 페이징 적용된 리스트 띄우기 (RecyclerView, ListAdapter, Glide)
 
 
