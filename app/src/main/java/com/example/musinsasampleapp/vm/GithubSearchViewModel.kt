@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.musinsasampleapp.data.source.GithubRepository
 import com.example.musinsasampleapp.data.vo.User
+import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.schedulers.Schedulers
@@ -45,12 +46,22 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
                 .getUsersByQuery(currQuery!!, pageNumber, PER_PAGE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ response ->
-                    if (response.isEmpty()) {
+                .flatMap { response ->
+                    val newUserList =
+                        response.items.map {
+                            val user = it.convertItemIntoUser(false)
+                            setUserChecked(user)
+                            user
+                        }
+
+                    Single.just(newUserList)
+                }
+                .subscribe({ newUserList ->
+                    if (newUserList.isEmpty()) {
                         showToastNotificationMsg("검색 결과가 없습니다.")
                     } else {
                         localUserList.clear()
-                        localUserList.addAll(response)
+                        localUserList.addAll(newUserList)
                         _userList.value = localUserList
                     }
                     hideProgressBar()
@@ -70,11 +81,21 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
                 .getUsersByQuery(currQuery!!, pageNumber, PER_PAGE)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe({ response ->
-                    if (response.isEmpty()) {
-                        showToastNotificationMsg("검색 결과가 더 없습니다.")
+                .flatMap { response ->
+                    val newUserList =
+                        response.items.map {
+                            val user = it.convertItemIntoUser(false)
+                            setUserChecked(user)
+                            user
+                        }
+
+                    Single.just(newUserList)
+                }
+                .subscribe({ newUserList ->
+                    if (newUserList.isEmpty()) {
+                        showToastNotificationMsg("검색 결과가 없습니다.")
                     } else {
-                        localUserList.addAll(response)
+                        localUserList.addAll(newUserList)
                         _userList.value = localUserList
                     }
                     hideProgressBar()
@@ -84,6 +105,22 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
                 })
         )
     }
+
+    private fun setUserChecked(user: User) {
+        compositeDisposable.add(
+            repository.findUserById(user.id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe({
+                    user.checked = true
+                }, {
+                    showToastNotificationMsg("로컬 데이터를 가져오는데 실패했습니다.")
+                }, {
+                    user.checked = false
+                })
+        )
+    }
+
 
     fun clearQuery() {
         query.value = ""
@@ -119,7 +156,6 @@ class GithubSearchViewModel(private val repository: GithubRepository) : ViewMode
 
     override fun onCleared() {
         super.onCleared()
-
         compositeDisposable.dispose()
     }
 
