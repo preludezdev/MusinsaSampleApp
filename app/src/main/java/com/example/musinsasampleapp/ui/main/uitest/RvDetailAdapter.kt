@@ -48,66 +48,7 @@ class RvDetailAdapter : RecyclerView.Adapter<RvDetailAdapter.DetailViewHolder>()
                     for (i in 0 until length) {
                         drawReservedTime(startTIme + i)
                     }
-
-                    when (it.startTime) {
-                        "9" -> timeline09.setBackgroundColor(
-                            ContextCompat.getColor(
-                                parent.context,
-                                R.color.deep_blue_sky
-                            )
-                        )
-                        "10" -> timeline10.setBackgroundColor(
-                            ContextCompat.getColor(
-                                parent.context,
-                                R.color.deep_blue_sky
-                            )
-                        )
-                        "11" -> timeline11.setBackgroundColor(
-                            ContextCompat.getColor(
-                                parent.context,
-                                R.color.deep_blue_sky
-                            )
-                        )
-                        "12" -> timeline12.setBackgroundColor(
-                            ContextCompat.getColor(
-                                parent.context,
-                                R.color.deep_blue_sky
-                            )
-                        )
-                        "13" -> timeline13.setBackgroundColor(
-                            ContextCompat.getColor(
-                                parent.context,
-                                R.color.deep_blue_sky
-                            )
-                        )
-                        "14" -> timeline14.setBackgroundColor(
-                            ContextCompat.getColor(
-                                parent.context,
-                                R.color.deep_blue_sky
-                            )
-                        )
-                        "15" -> timeline15.setBackgroundColor(
-                            ContextCompat.getColor(
-                                parent.context,
-                                R.color.deep_blue_sky
-                            )
-                        )
-                        "16" -> timeline16.setBackgroundColor(
-                            ContextCompat.getColor(
-                                parent.context,
-                                R.color.deep_blue_sky
-                            )
-                        )
-                        "17" -> timeline17.setBackgroundColor(
-                            ContextCompat.getColor(
-                                parent.context,
-                                R.color.deep_blue_sky
-                            )
-                        )
-                        else -> Unit
-                    }
                 }
-
             }
         }
 
@@ -168,7 +109,7 @@ class RvDetailAdapter : RecyclerView.Adapter<RvDetailAdapter.DetailViewHolder>()
                             R.color.deep_blue_sky
                         )
                     )
-                    else -> Unit
+                    else -> return
                 }
             }
         }
